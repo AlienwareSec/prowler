@@ -86,10 +86,14 @@ class Test_compute_instance_key_based_authentication:
 
             assert len(result) == 1
             assert result[0].status == "PASS"
+            assert (
+                result[0].status_extended
+                == "Instance Secure Instance (instance-1) is configured with SSH key-based authentication (keypair: my-production-keypair)."
+            )
             assert result[0].resource_id == "instance-1"
             assert result[0].resource_name == "Secure Instance"
-            assert "SSH key-based authentication" in result[0].status_extended
-            assert "my-production-keypair" in result[0].status_extended
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_instance_without_keypair(self):
         """Test instance without SSH keypair (FAIL)."""
@@ -140,11 +144,14 @@ class Test_compute_instance_key_based_authentication:
 
             assert len(result) == 1
             assert result[0].status == "FAIL"
-            assert result[0].resource_id == "instance-2"
             assert (
-                "does not have SSH key-based authentication"
-                in result[0].status_extended
+                result[0].status_extended
+                == "Instance Insecure Instance (instance-2) does not have SSH key-based authentication configured (no keypair assigned)."
             )
+            assert result[0].resource_id == "instance-2"
+            assert result[0].resource_name == "Insecure Instance"
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_multiple_instances_mixed(self):
         """Test multiple instances with mixed keypair configuration."""

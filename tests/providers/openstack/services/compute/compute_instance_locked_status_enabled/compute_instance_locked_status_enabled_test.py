@@ -86,10 +86,14 @@ class Test_compute_instance_locked_status_enabled:
 
             assert len(result) == 1
             assert result[0].status == "PASS"
+            assert (
+                result[0].status_extended
+                == "Instance Locked Instance (instance-1) has locked status enabled (reason: Production instance - do not modify)."
+            )
             assert result[0].resource_id == "instance-1"
             assert result[0].resource_name == "Locked Instance"
-            assert "has locked status enabled" in result[0].status_extended
-            assert "Production instance" in result[0].status_extended
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_instance_locked_without_reason(self):
         """Test instance with locked status enabled but no reason (PASS)."""
@@ -140,7 +144,14 @@ class Test_compute_instance_locked_status_enabled:
 
             assert len(result) == 1
             assert result[0].status == "PASS"
-            assert "has locked status enabled" in result[0].status_extended
+            assert (
+                result[0].status_extended
+                == "Instance Locked No Reason (instance-2) has locked status enabled."
+            )
+            assert result[0].resource_id == "instance-2"
+            assert result[0].resource_name == "Locked No Reason"
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_instance_not_locked(self):
         """Test instance without locked status (FAIL)."""
@@ -191,8 +202,14 @@ class Test_compute_instance_locked_status_enabled:
 
             assert len(result) == 1
             assert result[0].status == "FAIL"
+            assert (
+                result[0].status_extended
+                == "Instance Unlocked Instance (instance-3) does not have locked status enabled."
+            )
             assert result[0].resource_id == "instance-3"
-            assert "does not have locked status enabled" in result[0].status_extended
+            assert result[0].resource_name == "Unlocked Instance"
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_multiple_instances_mixed(self):
         """Test multiple instances with mixed locked status."""

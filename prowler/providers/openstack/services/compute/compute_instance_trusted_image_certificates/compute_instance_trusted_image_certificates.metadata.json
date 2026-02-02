@@ -2,10 +2,7 @@
   "Provider": "openstack",
   "CheckID": "compute_instance_trusted_image_certificates",
   "CheckTitle": "Compute instances use trusted image certificates",
-  "CheckType": [
-    "Software and Configuration Checks/OpenStack Security Best Practices",
-    "Software and Configuration Checks/Industry and Regulatory Standards"
-  ],
+  "CheckType": [],
   "ServiceName": "compute",
   "SubServiceName": "",
   "ResourceIdTemplate": "",
@@ -13,7 +10,7 @@
   "ResourceType": "OpenStackInstance",
   "ResourceGroup": "compute",
   "Description": "**OpenStack compute instances** (VMs) are evaluated to verify that **trusted image certificates** are configured. Trusted image certificates enable cryptographic validation of image signatures using Glance image signing (OpenStack Image Signature Verification). This ensures instances are launched from verified, untampered images signed by trusted authorities.",
-  "Risk": "Compute instances without trusted image certificates are vulnerable to:\n- **Integrity**: launching instances from tampered or malicious images containing backdoors, rootkits, or malware\n- **Confidentiality**: compromised images exfiltrating sensitive data or credentials from workloads\n- **Availability**: malicious images causing service disruption, data corruption, or cryptomining abuse\nAttackers with access to image repositories can inject malicious code into unsigned images. Without signature verification, Nova launches compromised images, establishing persistence and lateral movement.",
+  "Risk": "Compute instances without trusted image certificates can be launched from tampered or malicious images containing backdoors, rootkits, or malware. Attackers with access to image repositories can inject malicious code into unsigned images, and without signature verification, Nova will launch these compromised images. Malicious images can establish persistence, enable lateral movement, exfiltrate sensitive data or credentials from workloads, cause service disruption, corrupt data, or abuse compute resources for cryptomining.",
   "RelatedUrl": "",
   "AdditionalURLs": [
     "https://docs.openstack.org/glance/latest/user/signature.html",

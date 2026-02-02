@@ -2,9 +2,7 @@
   "Provider": "openstack",
   "CheckID": "compute_instance_locked_status_enabled",
   "CheckTitle": "Compute instances have locked status enabled",
-  "CheckType": [
-    "Software and Configuration Checks/OpenStack Security Best Practices"
-  ],
+  "CheckType": [],
   "ServiceName": "compute",
   "SubServiceName": "",
   "ResourceIdTemplate": "",
@@ -12,7 +10,7 @@
   "ResourceType": "OpenStackInstance",
   "ResourceGroup": "compute",
   "Description": "**OpenStack compute instances** (VMs) are evaluated to verify that **locked status** is enabled. Locking an instance prevents unauthorized administrative operations (delete, resize, rebuild, etc.) without first unlocking it. This provides an additional layer of protection against accidental or malicious modifications.",
-  "Risk": "Compute instances without locked status are vulnerable to:\n- **Integrity**: unauthorized deletion, resize, or rebuild operations by compromised accounts\n- **Availability**: accidental or malicious termination causing service disruption\n- **Operational**: lack of change control and auditability for critical instances\nAttackers with compromised credentials can manipulate unlocked instances without additional barriers, potentially destroying forensic evidence or disrupting production workloads.",
+  "Risk": "Compute instances without locked status can be subjected to unauthorized administrative operations such as deletion, resize, or rebuild by compromised accounts without additional barriers. Attackers with compromised credentials can manipulate unlocked instances to destroy forensic evidence or disrupt production workloads. Accidental termination or modification by operators also poses a risk due to lack of change control, potentially causing service disruption for critical instances.",
   "RelatedUrl": "",
   "AdditionalURLs": [
     "https://docs.openstack.org/api-ref/compute/#lock-server-lock",
@@ -32,7 +30,7 @@
     }
   },
   "Categories": [
-    "protection"
+    "resilience"
   ],
   "DependsOn": [],
   "RelatedTo": [],

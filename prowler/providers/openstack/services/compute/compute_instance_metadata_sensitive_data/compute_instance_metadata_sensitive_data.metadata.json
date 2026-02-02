@@ -2,10 +2,7 @@
   "Provider": "openstack",
   "CheckID": "compute_instance_metadata_sensitive_data",
   "CheckTitle": "Compute instance metadata does not contain sensitive data",
-  "CheckType": [
-    "Software and Configuration Checks/OpenStack Security Best Practices",
-    "Software and Configuration Checks/Industry and Regulatory Standards"
-  ],
+  "CheckType": [],
   "ServiceName": "compute",
   "SubServiceName": "",
   "ResourceIdTemplate": "",
@@ -13,7 +10,7 @@
   "ResourceType": "OpenStackInstance",
   "ResourceGroup": "compute",
   "Description": "**OpenStack compute instance metadata** is evaluated to detect **sensitive data** such as passwords, API keys, secrets, private keys, and database connection strings. Instance metadata is accessible via the metadata service (169.254.169.254) and can be queried by any process running inside the instance. Storing secrets in metadata exposes them to SSRF attacks, compromised applications, and unauthorized access.",
-  "Risk": "Compute instance metadata containing sensitive data is vulnerable to:\n- **Confidentiality**: direct credential exposure via metadata service (169.254.169.254) accessible to any instance process\n- **Integrity**: stolen credentials enabling unauthorized modifications, data tampering, and privilege escalation\n- **Availability**: compromised accounts used for resource deletion, cryptomining, or ransomware attacks\nAttackers exploiting SSRF vulnerabilities, compromised applications, or insider threats can query the metadata service to extract passwords, API keys, database connection strings, and private keys. Hardcoded secrets in metadata bypass secrets management best practices and enable credential theft at scale.",
+  "Risk": "Compute instance metadata containing sensitive data exposes credentials directly through the metadata service (169.254.169.254), which is accessible to any process running inside the instance. Attackers exploiting SSRF vulnerabilities, compromised applications, or insider threats can query the metadata service to extract passwords, API keys, database connection strings, and private keys. Hardcoded secrets in metadata bypass secrets management best practices and enable credential theft at scale. Stolen credentials can be used for unauthorized modifications, data tampering, privilege escalation, resource deletion, cryptomining, or ransomware attacks.",
   "RelatedUrl": "",
   "AdditionalURLs": [
     "https://docs.openstack.org/nova/latest/user/metadata.html",
@@ -39,5 +36,5 @@
   ],
   "DependsOn": [],
   "RelatedTo": [],
-  "Notes": "This check uses regex pattern matching and may produce false positives (e.g., 'password_reset_url' without actual password). Review findings manually. Patterns detect: password, api_key, secret, private_key, connection_string. Does not validate actual credential format or entropy. Metadata is world-readable within instance via 169.254.169.254."
+  "Notes": "This check uses the detect-secrets library to scan for credentials. May produce false positives on metadata keys containing secret-like keywords. Findings should be reviewed manually. The audit_config allows configuring secrets_ignore_patterns to exclude specific patterns and detect_secrets_plugins to customize detection. Metadata is world-readable within instance via 169.254.169.254."
 }

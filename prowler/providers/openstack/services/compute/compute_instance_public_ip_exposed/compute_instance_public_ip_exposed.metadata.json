@@ -2,10 +2,7 @@
   "Provider": "openstack",
   "CheckID": "compute_instance_public_ip_exposed",
   "CheckTitle": "Compute instances are not exposed to the internet",
-  "CheckType": [
-    "Software and Configuration Checks/OpenStack Security Best Practices",
-    "TTPs/Initial Access"
-  ],
+  "CheckType": [],
   "ServiceName": "compute",
   "SubServiceName": "",
   "ResourceIdTemplate": "",
@@ -13,7 +10,7 @@
   "ResourceType": "OpenStackInstance",
   "ResourceGroup": "compute",
   "Description": "**OpenStack compute instances** (VMs) are evaluated to verify that they are **not exposed to the internet** via public IP addresses (floating IPs or access IPs). Instances with public IPs are directly reachable from the internet, increasing attack surface. Best practices recommend accessing instances through **bastion hosts**, **VPN gateways**, or **load balancers** instead of direct public exposure.",
-  "Risk": "Compute instances with public IP addresses are vulnerable to:\n- **Confidentiality**: direct internet access enabling unauthorized reconnaissance, port scanning, and exploitation of vulnerabilities\n- **Integrity**: brute-force attacks, exploit delivery, and lateral movement from compromised public-facing instances\n- **Availability**: DDoS attacks, volumetric floods, and service disruption targeting public IPs\nAttackers can directly target instances with public IPs for exploit attempts, credential stuffing, and malware delivery. Public exposure bypasses network segmentation and defense-in-depth controls.",
+  "Risk": "Compute instances with public IP addresses are directly reachable from the internet, enabling unauthorized reconnaissance, port scanning, and exploitation of vulnerabilities. Attackers can directly target these instances for brute-force attacks, exploit delivery, credential stuffing, and malware injection. Public exposure bypasses network segmentation and defense-in-depth controls, increasing the attack surface. Instances with public IPs are also vulnerable to DDoS attacks and volumetric floods that can cause service disruption. Compromised public-facing instances become pivot points for lateral movement to internal infrastructure.",
   "RelatedUrl": "",
   "AdditionalURLs": [
     "https://docs.openstack.org/neutron/latest/admin/intro-nat.html",

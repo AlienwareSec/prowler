@@ -2,10 +2,7 @@
   "Provider": "openstack",
   "CheckID": "compute_instance_key_based_authentication",
   "CheckTitle": "Compute instances use SSH key-based authentication",
-  "CheckType": [
-    "Software and Configuration Checks/OpenStack Security Best Practices",
-    "Software and Configuration Checks/Industry and Regulatory Standards"
-  ],
+  "CheckType": [],
   "ServiceName": "compute",
   "SubServiceName": "",
   "ResourceIdTemplate": "",
@@ -13,7 +10,7 @@
   "ResourceType": "OpenStackInstance",
   "ResourceGroup": "compute",
   "Description": "**OpenStack compute instances** (VMs) are evaluated to verify that **SSH key-based authentication** is configured by checking for an assigned keypair. Password-based authentication is vulnerable to brute-force attacks, credential stuffing, and phishing. SSH keys provide cryptographic authentication resistant to these attacks.",
-  "Risk": "Compute instances without SSH key-based authentication are vulnerable to:\n- **Confidentiality**: brute-force password attacks exposing instance access and data exfiltration\n- **Integrity**: unauthorized SSH access enabling malware injection, lateral movement, and privilege escalation\n- **Availability**: credential stuffing campaigns locking accounts or disrupting services\nAttackers can systematically test common passwords, exploit password reuse, or intercept credentials transmitted over insecure channels. Key-based authentication eliminates password-based attack vectors.",
+  "Risk": "Compute instances without SSH key-based authentication are vulnerable to brute-force password attacks, credential stuffing, and password reuse exploitation. Attackers can systematically test common passwords, intercept credentials transmitted over insecure channels, or exploit leaked credentials from other breaches. Successful unauthorized SSH access enables malware injection, lateral movement, privilege escalation, and data exfiltration. Key-based authentication eliminates these password-based attack vectors through cryptographic authentication.",
   "RelatedUrl": "",
   "AdditionalURLs": [
     "https://docs.openstack.org/nova/latest/user/launch-instances.html",

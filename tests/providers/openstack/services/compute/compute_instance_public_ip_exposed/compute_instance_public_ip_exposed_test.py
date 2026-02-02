@@ -86,8 +86,14 @@ class Test_compute_instance_public_ip_exposed:
 
             assert len(result) == 1
             assert result[0].status == "PASS"
+            assert (
+                result[0].status_extended
+                == "Instance Private Instance (instance-1) is not exposed to the internet (no public IP addresses or external network attachments detected)."
+            )
             assert result[0].resource_id == "instance-1"
-            assert "is not exposed to the internet" in result[0].status_extended
+            assert result[0].resource_name == "Private Instance"
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_instance_with_public_ipv4(self):
         """Test instance with public IPv4 (FAIL)."""
@@ -138,8 +144,14 @@ class Test_compute_instance_public_ip_exposed:
 
             assert len(result) == 1
             assert result[0].status == "FAIL"
-            assert "is exposed to the internet" in result[0].status_extended
+            assert result[0].status_extended.startswith(
+                "Instance Public Instance (instance-2) is exposed to the internet with public IP addresses:"
+            )
             assert "203.0.113.10" in result[0].status_extended
+            assert result[0].resource_id == "instance-2"
+            assert result[0].resource_name == "Public Instance"
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_instance_with_access_ipv4(self):
         """Test instance with access IPv4 (FAIL)."""
@@ -190,7 +202,14 @@ class Test_compute_instance_public_ip_exposed:
 
             assert len(result) == 1
             assert result[0].status == "FAIL"
+            assert result[0].status_extended.startswith(
+                "Instance Access IP Instance (instance-3) is exposed to the internet with public IP addresses:"
+            )
             assert "198.51.100.5" in result[0].status_extended
+            assert result[0].resource_id == "instance-3"
+            assert result[0].resource_name == "Access IP Instance"
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_instance_with_ipv6(self):
         """Test instance with public IPv6 (FAIL)."""
@@ -241,7 +260,14 @@ class Test_compute_instance_public_ip_exposed:
 
             assert len(result) == 1
             assert result[0].status == "FAIL"
+            assert result[0].status_extended.startswith(
+                "Instance IPv6 Instance (instance-4) is exposed to the internet with public IP addresses:"
+            )
             assert "2001:db8::1" in result[0].status_extended
+            assert result[0].resource_id == "instance-4"
+            assert result[0].resource_name == "IPv6 Instance"
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_multiple_instances_mixed(self):
         """Test multiple instances with mixed public IP configuration."""
@@ -371,6 +397,10 @@ class Test_compute_instance_public_ip_exposed:
             assert result[0].status == "FAIL"
             assert "57.128.163.151" in result[0].status_extended
             assert "Ext-Net" in result[0].status_extended
+            assert result[0].resource_id
+            assert result[0].resource_name
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_instance_mixed_networks_private_and_external(self):
         """Test instance with both private and external network attachments."""
@@ -426,3 +456,7 @@ class Test_compute_instance_public_ip_exposed:
             assert result[0].status == "FAIL"
             assert "8.8.8.8" in result[0].status_extended
             assert "public-network" in result[0].status_extended
+            assert result[0].resource_id
+            assert result[0].resource_name
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID

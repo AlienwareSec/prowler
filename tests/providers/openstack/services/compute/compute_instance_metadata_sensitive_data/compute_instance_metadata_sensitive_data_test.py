@@ -17,6 +17,7 @@ class Test_compute_instance_metadata_sensitive_data:
         """Test when no instances exist."""
         compute_client = mock.MagicMock()
         compute_client.instances = []
+        compute_client.audit_config = {}
 
         with (
             mock.patch(
@@ -40,6 +41,7 @@ class Test_compute_instance_metadata_sensitive_data:
     def test_instance_no_metadata(self):
         """Test instance with no metadata (PASS)."""
         compute_client = mock.MagicMock()
+        compute_client.audit_config = {}
         compute_client.instances = [
             ComputeInstance(
                 id="instance-1",
@@ -86,11 +88,19 @@ class Test_compute_instance_metadata_sensitive_data:
 
             assert len(result) == 1
             assert result[0].status == "PASS"
-            assert "has no metadata" in result[0].status_extended
+            assert (
+                result[0].status_extended
+                == "Instance No Metadata (instance-1) has no metadata (no sensitive data exposure risk)."
+            )
+            assert result[0].resource_id == "instance-1"
+            assert result[0].resource_name == "No Metadata"
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_instance_safe_metadata(self):
         """Test instance with safe metadata (PASS)."""
         compute_client = mock.MagicMock()
+        compute_client.audit_config = {}
         compute_client.instances = [
             ComputeInstance(
                 id="instance-2",
@@ -137,11 +147,19 @@ class Test_compute_instance_metadata_sensitive_data:
 
             assert len(result) == 1
             assert result[0].status == "PASS"
-            assert "does not contain sensitive data" in result[0].status_extended
+            assert (
+                result[0].status_extended
+                == "Instance Safe Metadata (instance-2) metadata does not contain sensitive data."
+            )
+            assert result[0].resource_id == "instance-2"
+            assert result[0].resource_name == "Safe Metadata"
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_instance_password_in_metadata(self):
         """Test instance with password in metadata (FAIL)."""
         compute_client = mock.MagicMock()
+        compute_client.audit_config = {}
         compute_client.instances = [
             ComputeInstance(
                 id="instance-3",
@@ -188,12 +206,12 @@ class Test_compute_instance_metadata_sensitive_data:
 
             assert len(result) == 1
             assert result[0].status == "FAIL"
-            assert "contains potential sensitive data" in result[0].status_extended
-            assert "password" in result[0].status_extended.lower()
+            assert "contains potential secrets" in result[0].status_extended
 
     def test_instance_api_key_in_metadata(self):
         """Test instance with API key in metadata (FAIL)."""
         compute_client = mock.MagicMock()
+        compute_client.audit_config = {}
         compute_client.instances = [
             ComputeInstance(
                 id="instance-4",
@@ -240,11 +258,18 @@ class Test_compute_instance_metadata_sensitive_data:
 
             assert len(result) == 1
             assert result[0].status == "FAIL"
-            assert "api_key" in result[0].status_extended.lower()
+            assert result[0].status_extended.startswith(
+                "Instance API Key Metadata (instance-4) metadata contains potential secrets ->"
+            )
+            assert result[0].resource_id == "instance-4"
+            assert result[0].resource_name == "API Key Metadata"
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_instance_connection_string_in_metadata(self):
         """Test instance with database connection string in metadata (FAIL)."""
         compute_client = mock.MagicMock()
+        compute_client.audit_config = {}
         compute_client.instances = [
             ComputeInstance(
                 id="instance-5",
@@ -291,11 +316,18 @@ class Test_compute_instance_metadata_sensitive_data:
 
             assert len(result) == 1
             assert result[0].status == "FAIL"
-            assert "connection_string" in result[0].status_extended.lower()
+            assert result[0].status_extended.startswith(
+                "Instance Connection String (instance-5) metadata contains potential secrets ->"
+            )
+            assert result[0].resource_id == "instance-5"
+            assert result[0].resource_name == "Connection String"
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_instance_private_key_in_metadata(self):
         """Test instance with private key in metadata (FAIL)."""
         compute_client = mock.MagicMock()
+        compute_client.audit_config = {}
         compute_client.instances = [
             ComputeInstance(
                 id="instance-6",
@@ -342,11 +374,18 @@ class Test_compute_instance_metadata_sensitive_data:
 
             assert len(result) == 1
             assert result[0].status == "FAIL"
-            assert "private_key" in result[0].status_extended.lower()
+            assert result[0].status_extended.startswith(
+                "Instance Private Key (instance-6) metadata contains potential secrets ->"
+            )
+            assert result[0].resource_id == "instance-6"
+            assert result[0].resource_name == "Private Key"
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_multiple_instances_mixed(self):
         """Test multiple instances with mixed metadata."""
         compute_client = mock.MagicMock()
+        compute_client.audit_config = {}
         compute_client.instances = [
             ComputeInstance(
                 id="instance-pass",

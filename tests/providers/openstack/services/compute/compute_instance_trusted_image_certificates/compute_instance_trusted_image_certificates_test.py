@@ -86,9 +86,14 @@ class Test_compute_instance_trusted_image_certificates:
 
             assert len(result) == 1
             assert result[0].status == "PASS"
-            assert result[0].resource_id == "instance-1"
-            assert "uses trusted image certificates" in result[0].status_extended
+            assert result[0].status_extended.startswith(
+                "Instance Trusted Instance (instance-1) uses trusted image certificates:"
+            )
             assert "cert-123" in result[0].status_extended
+            assert result[0].resource_id == "instance-1"
+            assert result[0].resource_name == "Trusted Instance"
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_instance_without_trusted_certificates(self):
         """Test instance without trusted image certificates (FAIL)."""
@@ -140,8 +145,13 @@ class Test_compute_instance_trusted_image_certificates:
             assert len(result) == 1
             assert result[0].status == "FAIL"
             assert (
-                "does not use trusted image certificates" in result[0].status_extended
+                result[0].status_extended
+                == "Instance Untrusted Instance (instance-2) does not use trusted image certificates (image signature validation not enforced)."
             )
+            assert result[0].resource_id == "instance-2"
+            assert result[0].resource_name == "Untrusted Instance"
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_multiple_instances_mixed(self):
         """Test multiple instances with mixed certificate configuration."""

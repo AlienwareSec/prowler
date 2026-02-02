@@ -12,13 +12,8 @@ class compute_instance_isolated_private_network(Check):
 
         for instance in compute_client.instances:
             report = CheckReportOpenStack(metadata=self.metadata(), resource=instance)
-            report.resource_id = instance.id
-            report.resource_name = instance.name
-            report.region = instance.region
-
             # Check if instance has private IPs
             has_private_ips = bool(instance.private_v4 or instance.private_v6)
-
             # Check if instance has public IPs
             has_public_ips = bool(
                 instance.public_v4
@@ -36,30 +31,17 @@ class compute_instance_isolated_private_network(Check):
                 if instance.private_v6:
                     private_ips.append(f"IPv6: {instance.private_v6}")
                 ip_list = ", ".join(private_ips)
-                report.status_extended = (
-                    f"Instance {instance.name} ({instance.id}) is properly isolated "
-                    f"in private network with private IPs ({ip_list}) and no public "
-                    f"exposure."
-                )
+                report.status_extended = f"Instance {instance.name} ({instance.id}) is properly isolated in private network with private IPs ({ip_list}) and no public exposure."
             elif has_public_ips and has_private_ips:
                 report.status = "FAIL"
-                report.status_extended = (
-                    f"Instance {instance.name} ({instance.id}) has mixed public and "
-                    f"private network exposure (not properly isolated)."
-                )
+                report.status_extended = f"Instance {instance.name} ({instance.id}) has mixed public and private network exposure (not properly isolated)."
             elif has_public_ips and not has_private_ips:
                 report.status = "FAIL"
-                report.status_extended = (
-                    f"Instance {instance.name} ({instance.id}) has only public IP "
-                    f"addresses (no private network isolation)."
-                )
+                report.status_extended = f"Instance {instance.name} ({instance.id}) has only public IP addresses (no private network isolation)."
             else:
                 # No IPs at all (edge case)
                 report.status = "FAIL"
-                report.status_extended = (
-                    f"Instance {instance.name} ({instance.id}) has no network "
-                    f"configuration (no IPs assigned)."
-                )
+                report.status_extended = f"Instance {instance.name} ({instance.id}) has no network configuration (no IPs assigned)."
 
             findings.append(report)
 

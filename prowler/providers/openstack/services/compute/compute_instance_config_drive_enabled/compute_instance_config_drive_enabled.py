@@ -12,22 +12,12 @@ class compute_instance_config_drive_enabled(Check):
 
         for instance in compute_client.instances:
             report = CheckReportOpenStack(metadata=self.metadata(), resource=instance)
-            report.resource_id = instance.id
-            report.resource_name = instance.name
-            report.region = instance.region
-
             if instance.has_config_drive:
                 report.status = "PASS"
-                report.status_extended = (
-                    f"Instance {instance.name} ({instance.id}) has config drive "
-                    f"enabled for secure metadata injection."
-                )
+                report.status_extended = f"Instance {instance.name} ({instance.id}) has config drive enabled for secure metadata injection."
             else:
                 report.status = "FAIL"
-                report.status_extended = (
-                    f"Instance {instance.name} ({instance.id}) does not have config "
-                    f"drive enabled (relies on metadata service)."
-                )
+                report.status_extended = f"Instance {instance.name} ({instance.id}) does not have config drive enabled (relies on metadata service)."
 
             findings.append(report)
 

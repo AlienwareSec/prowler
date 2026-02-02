@@ -86,8 +86,14 @@ class Test_compute_instance_config_drive_enabled:
 
             assert len(result) == 1
             assert result[0].status == "PASS"
+            assert (
+                result[0].status_extended
+                == "Instance ConfigDrive Instance (instance-1) has config drive enabled for secure metadata injection."
+            )
             assert result[0].resource_id == "instance-1"
-            assert "has config drive enabled" in result[0].status_extended
+            assert result[0].resource_name == "ConfigDrive Instance"
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_instance_without_config_drive(self):
         """Test instance without config drive (FAIL)."""
@@ -138,7 +144,14 @@ class Test_compute_instance_config_drive_enabled:
 
             assert len(result) == 1
             assert result[0].status == "FAIL"
-            assert "does not have config drive enabled" in result[0].status_extended
+            assert (
+                result[0].status_extended
+                == "Instance No ConfigDrive (instance-2) does not have config drive enabled (relies on metadata service)."
+            )
+            assert result[0].resource_id == "instance-2"
+            assert result[0].resource_name == "No ConfigDrive"
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_multiple_instances_mixed(self):
         """Test multiple instances with mixed config drive status."""

@@ -2,9 +2,7 @@
   "Provider": "openstack",
   "CheckID": "compute_instance_config_drive_enabled",
   "CheckTitle": "Compute instances have config drive enabled",
-  "CheckType": [
-    "Software and Configuration Checks/OpenStack Security Best Practices"
-  ],
+  "CheckType": [],
   "ServiceName": "compute",
   "SubServiceName": "",
   "ResourceIdTemplate": "",
@@ -12,11 +10,11 @@
   "ResourceType": "OpenStackInstance",
   "ResourceGroup": "compute",
   "Description": "**OpenStack compute instances** (VMs) are evaluated to verify that **config drive** is enabled. Config drive provides metadata and user data via a virtual CD-ROM device instead of the metadata service (169.254.169.254). This improves security by eliminating network-based metadata access, which can be vulnerable to SSRF attacks and metadata service exploitation.",
-  "Risk": "Compute instances without config drive rely on the metadata service, which is vulnerable to:\n- **Confidentiality**: SSRF attacks extracting instance metadata, user data, and credentials\n- **Integrity**: metadata service spoofing or man-in-the-middle attacks in compromised networks\n- **Availability**: metadata service outages preventing instance initialization\nAttackers exploiting SSRF vulnerabilities in applications can query the metadata service to steal cloud credentials, SSH keys, and sensitive configuration data. Config drive eliminates this network attack surface.",
+  "Risk": "Compute instances without config drive rely on the metadata service (169.254.169.254), which is vulnerable to SSRF attacks that can extract instance metadata, user data, and credentials. Attackers exploiting SSRF vulnerabilities in applications can query the metadata service to steal cloud credentials, SSH keys, and sensitive configuration data. The metadata service is also vulnerable to spoofing attacks in compromised networks and can become unavailable, preventing instance initialization. Config drive eliminates this network attack surface by providing metadata via a virtual CD-ROM device.",
   "RelatedUrl": "",
   "AdditionalURLs": [
-    "https://docs.openstack.org/nova/latest/user/config-drive.html",
-    "https://docs.openstack.org/security-guide/compute/instance-isolation.html",
+    "https://docs.openstack.org/nova/queens/user/config-drive.html",
+    "https://docs.openstack.org/ironic/latest/install/configdrive.html",
     "https://cloudinit.readthedocs.io/en/latest/reference/datasources/configdrive.html"
   ],
   "Remediation": {
@@ -32,7 +30,7 @@
     }
   },
   "Categories": [
-    "isolation"
+    "trust-boundaries"
   ],
   "DependsOn": [],
   "RelatedTo": [],

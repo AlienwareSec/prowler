@@ -41,13 +41,8 @@ class compute_instance_public_ip_exposed(Check):
 
         for instance in compute_client.instances:
             report = CheckReportOpenStack(metadata=self.metadata(), resource=instance)
-            report.resource_id = instance.id
-            report.resource_name = instance.name
-            report.region = instance.region
-
             # Collect all potential public IP indicators
             public_ips = []
-
             # Check SDK computed properties
             if instance.public_v4:
                 public_ips.append(f"Public IPv4: {instance.public_v4}")
@@ -78,17 +73,11 @@ class compute_instance_public_ip_exposed(Check):
 
             if not unique_public_ips:
                 report.status = "PASS"
-                report.status_extended = (
-                    f"Instance {instance.name} ({instance.id}) is not exposed to the "
-                    f"internet (no public IP addresses or external network attachments detected)."
-                )
+                report.status_extended = f"Instance {instance.name} ({instance.id}) is not exposed to the internet (no public IP addresses or external network attachments detected)."
             else:
                 report.status = "FAIL"
                 ip_list = ", ".join(unique_public_ips)
-                report.status_extended = (
-                    f"Instance {instance.name} ({instance.id}) is exposed to the "
-                    f"internet with public IP addresses: {ip_list}."
-                )
+                report.status_extended = f"Instance {instance.name} ({instance.id}) is exposed to the internet with public IP addresses: {ip_list}."
 
             findings.append(report)
 

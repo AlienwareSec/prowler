@@ -2,9 +2,7 @@
   "Provider": "openstack",
   "CheckID": "compute_instance_isolated_private_network",
   "CheckTitle": "Compute instances are isolated in private networks",
-  "CheckType": [
-    "Software and Configuration Checks/OpenStack Security Best Practices"
-  ],
+  "CheckType": [],
   "ServiceName": "compute",
   "SubServiceName": "",
   "ResourceIdTemplate": "",
@@ -12,7 +10,7 @@
   "ResourceType": "OpenStackInstance",
   "ResourceGroup": "compute",
   "Description": "**OpenStack compute instances** (VMs) are evaluated to verify **network isolation** by ensuring they have private IP addresses without mixed public/private exposure. Proper network segmentation requires instances to be deployed in private networks and accessed via controlled entry points (bastion hosts, VPN, load balancers) rather than direct public exposure.",
-  "Risk": "Compute instances without proper network isolation are vulnerable to:\n- **Confidentiality**: unauthorized access from internet bypassing network segmentation controls\n- **Integrity**: lateral movement between public-facing and internal workloads due to flat network topology\n- **Availability**: exposure of internal services to internet-based attacks (DDoS, exploit attempts)\nAttackers can exploit mixed public/private exposure to pivot from compromised public instances to internal infrastructure. Lack of network boundaries enables uncontrolled lateral movement across trust zones.",
+  "Risk": "Compute instances with mixed public/private network exposure or only public IPs lack proper network isolation, allowing unauthorized access from the internet that bypasses network segmentation controls. Attackers can exploit this exposure to pivot from compromised public instances to internal infrastructure and conduct lateral movement across trust zones. Flat network topology exposes internal services to internet-based attacks including DDoS and exploit attempts, increasing the overall attack surface.",
   "RelatedUrl": "",
   "AdditionalURLs": [
     "https://docs.openstack.org/neutron/latest/admin/intro-os-networking.html",
@@ -33,7 +31,6 @@
     }
   },
   "Categories": [
-    "isolation",
     "trust-boundaries"
   ],
   "DependsOn": [],

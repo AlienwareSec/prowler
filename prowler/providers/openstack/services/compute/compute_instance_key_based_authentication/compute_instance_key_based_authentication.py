@@ -12,22 +12,12 @@ class compute_instance_key_based_authentication(Check):
 
         for instance in compute_client.instances:
             report = CheckReportOpenStack(metadata=self.metadata(), resource=instance)
-            report.resource_id = instance.id
-            report.resource_name = instance.name
-            report.region = instance.region
-
             if instance.key_name:
                 report.status = "PASS"
-                report.status_extended = (
-                    f"Instance {instance.name} ({instance.id}) is configured with "
-                    f"SSH key-based authentication (keypair: {instance.key_name})."
-                )
+                report.status_extended = f"Instance {instance.name} ({instance.id}) is configured with SSH key-based authentication (keypair: {instance.key_name})."
             else:
                 report.status = "FAIL"
-                report.status_extended = (
-                    f"Instance {instance.name} ({instance.id}) does not have SSH "
-                    f"key-based authentication configured (no keypair assigned)."
-                )
+                report.status_extended = f"Instance {instance.name} ({instance.id}) does not have SSH key-based authentication configured (no keypair assigned)."
 
             findings.append(report)
 

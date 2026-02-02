@@ -86,8 +86,14 @@ class Test_compute_instance_isolated_private_network:
 
             assert len(result) == 1
             assert result[0].status == "PASS"
+            assert (
+                result[0].status_extended
+                == "Instance Isolated Instance (instance-1) is properly isolated in private network with private IPs (IPv4: 10.0.0.5) and no public exposure."
+            )
             assert result[0].resource_id == "instance-1"
-            assert "properly isolated in private network" in result[0].status_extended
+            assert result[0].resource_name == "Isolated Instance"
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_instance_mixed_public_private(self):
         """Test instance with both public and private IPs (FAIL)."""
@@ -139,8 +145,13 @@ class Test_compute_instance_isolated_private_network:
             assert len(result) == 1
             assert result[0].status == "FAIL"
             assert (
-                "mixed public and private network exposure" in result[0].status_extended
+                result[0].status_extended
+                == "Instance Mixed Instance (instance-2) has mixed public and private network exposure (not properly isolated)."
             )
+            assert result[0].resource_id == "instance-2"
+            assert result[0].resource_name == "Mixed Instance"
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_instance_public_only(self):
         """Test instance with only public IP (FAIL)."""
@@ -191,7 +202,14 @@ class Test_compute_instance_isolated_private_network:
 
             assert len(result) == 1
             assert result[0].status == "FAIL"
-            assert "has only public IP addresses" in result[0].status_extended
+            assert (
+                result[0].status_extended
+                == "Instance Public Only (instance-3) has only public IP addresses (no private network isolation)."
+            )
+            assert result[0].resource_id == "instance-3"
+            assert result[0].resource_name == "Public Only"
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_instance_no_ips(self):
         """Test instance with no IPs (FAIL)."""
@@ -242,7 +260,14 @@ class Test_compute_instance_isolated_private_network:
 
             assert len(result) == 1
             assert result[0].status == "FAIL"
-            assert "has no network configuration" in result[0].status_extended
+            assert (
+                result[0].status_extended
+                == "Instance No IPs (instance-4) has no network configuration (no IPs assigned)."
+            )
+            assert result[0].resource_id == "instance-4"
+            assert result[0].resource_name == "No IPs"
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID
 
     def test_instance_private_ipv6_only(self):
         """Test instance with private IPv6 only (PASS)."""
@@ -293,4 +318,11 @@ class Test_compute_instance_isolated_private_network:
 
             assert len(result) == 1
             assert result[0].status == "PASS"
-            assert "properly isolated" in result[0].status_extended
+            assert (
+                result[0].status_extended
+                == "Instance IPv6 Private (instance-5) is properly isolated in private network with private IPs (IPv6: fd00::1) and no public exposure."
+            )
+            assert result[0].resource_id == "instance-5"
+            assert result[0].resource_name == "IPv6 Private"
+            assert result[0].region == OPENSTACK_REGION
+            assert result[0].project_id == OPENSTACK_PROJECT_ID

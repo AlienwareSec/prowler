@@ -12,10 +12,6 @@ class compute_instance_locked_status_enabled(Check):
 
         for instance in compute_client.instances:
             report = CheckReportOpenStack(metadata=self.metadata(), resource=instance)
-            report.resource_id = instance.id
-            report.resource_name = instance.name
-            report.region = instance.region
-
             if instance.is_locked:
                 report.status = "PASS"
                 reason = (
@@ -23,16 +19,10 @@ class compute_instance_locked_status_enabled(Check):
                     if instance.locked_reason
                     else ""
                 )
-                report.status_extended = (
-                    f"Instance {instance.name} ({instance.id}) has locked status "
-                    f"enabled{reason}."
-                )
+                report.status_extended = f"Instance {instance.name} ({instance.id}) has locked status enabled{reason}."
             else:
                 report.status = "FAIL"
-                report.status_extended = (
-                    f"Instance {instance.name} ({instance.id}) does not have locked "
-                    f"status enabled."
-                )
+                report.status_extended = f"Instance {instance.name} ({instance.id}) does not have locked status enabled."
 
             findings.append(report)
 
